@@ -64,7 +64,7 @@ app.listen(process.env.PORT || 8080, process.env.IP);
 app.delete('/items/:id', function(req, res) {
     var id = req.params.id;
     // Supplied id needs to be numeric, and needs to be in items list
-    if (typeof id != 'number' || storage.items[id] == '') {    
+    if (typeof id != 'number' || storage.items[id] === undefined) {    
         var msg;
         if (typeof id != 'number') {
             msg = 'Non-numeric id supplied; must be a number';
