@@ -11,22 +11,7 @@ var Storage = {
         return item;
     },
     delete: function(id) {
-        // Get item by id in the `items` array
-        var itemToDelete;
-        for (var i = 0; i < this.items.length; i++) {
-            if (this.items[i][id] === id) {
-                itemToDelete = this.items[i];
-                break;
-            }
-        }
-        
-        // Delete the item
-        /*
-        var index = array.indexOf(5);
-        if (index > -1) {
-            array.splice(index, 1);
-        }
-        */
+        this.items.splice(id, 1);   // Operates in place, so no success/fail flag to return
     }
 };
 
@@ -64,7 +49,7 @@ app.listen(process.env.PORT || 8080, process.env.IP);
 app.delete('/items/:id', function(req, res) {
     var id = req.params.id;
     // Supplied id needs to be numeric, and needs to be in items list
-    if (typeof id != 'number' || storage.items[id] === undefined) {    
+    if (typeof id != 'number' || storage.items[id] === undefined) {  
         var msg;
         if (typeof id != 'number') {
             msg = 'Non-numeric id supplied; must be a number';
@@ -74,10 +59,8 @@ app.delete('/items/:id', function(req, res) {
         
         res.status(404).json({'error': msg});
     } else {
-        var result = storage.delete(id);    // Returns 'true' if deleted successfully
-        if (result) {
-            res.status(200);
-        }
+        storage.delete(id);    
+        res.status(200);
     }
 });
 
