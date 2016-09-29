@@ -11,7 +11,12 @@ var Storage = {
         return item;
     },
     delete: function(id) {
-        this.items.splice(id, 1);   // Operates in place, so no success/fail flag to return
+        var deleteResult = this.items.splice(id, 1);    // Returns item removed (on success) or empty array (on fail)
+        if (deleteResult.length > 0) {
+            return true;    // Succeeded
+        } else {
+            return false;   // Failed for some reason
+        }
     }
 };
 
@@ -48,8 +53,9 @@ app.listen(process.env.PORT || 8080, process.env.IP);
 
 app.delete('/items/:id', function(req, res) {
     var id = req.params.id;
+    id = parseInt(id);
     // Supplied id needs to be numeric, and needs to be in items list
-    if (typeof id != 'number' || storage.items[id] === undefined) {  
+    if (storage.items[id] === undefined) {  
         var msg;
         if (typeof id != 'number') {
             msg = 'Non-numeric id supplied; must be a number';
@@ -59,8 +65,12 @@ app.delete('/items/:id', function(req, res) {
         
         res.status(404).json({'error': msg});
     } else {
-        storage.delete(id);    
-        res.status(200);
+        var r = storage.delete(id);     // Returns true on success   
+        if (r) {
+            res.status(200);
+        } else {
+            res.status(500).json({'error': 'You passed a valid item id, but the item could not be deleted for some reason.'});
+        }
     }
 });
 
