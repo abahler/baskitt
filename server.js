@@ -53,16 +53,10 @@ app.listen(process.env.PORT || 8080, process.env.IP);
 
 app.delete('/items/:id', function(req, res) {
     var id = req.params.id;
-    id = parseInt(id);
-    // Supplied id needs to be numeric, and needs to be in items list
+    id = parseInt(id);  // Make sure we're working with a number
+    // Supplied id needs to be in items list
     if (storage.items[id] === undefined) {  
-        var msg;
-        if (typeof id != 'number') {
-            msg = 'Non-numeric id supplied; must be a number';
-        } else if (storage.items[id] == '') {
-            msg = 'The supplied id was not found in the items list';
-        }
-        
+        var msg = 'The supplied id was not found in the items list';
         res.status(404).json({'error': msg});
     } else {
         var r = storage.delete(id);     // Returns true on success   
