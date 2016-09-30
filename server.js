@@ -18,6 +18,10 @@ var Storage = {
         } else {
             return false;   // Failed for some reason
         }
+    },
+    put: function(reqBody) {
+        // Get the id 
+        // > return item, just as 'add' does.
     }
 };
 
@@ -52,8 +56,6 @@ app.post('/items', jsonParser, function(req, res) {
 
 app.delete('/items/:id', function(req, res) {
     var id = req.params.id;
-    // console.log('You have made a DELETE request with the supplied id of ' + id + '!');
-    // /* die after console.log */
     id = parseInt(id);  // Make sure we're working with a number
 
     // Supplied id needs to be in items list
@@ -70,7 +72,6 @@ app.delete('/items/:id', function(req, res) {
     }
 });
 
-// TODO: add 'PUT' endpoint
 /*
 > Create an endpoint that responds to a PUT request to /items/:id
 > If the item is edited, the server should respond with a 200 OK status and the new item
@@ -79,5 +80,19 @@ app.delete('/items/:id', function(req, res) {
 > Remember that you're passing the ID in the request.params and the request.body, 
     so you should check that they match as well.
 */
+app.put('/items/:id', jsonParser, function(req, res) {
+    var id = req.params.id;
+    id = parseInt(id);
+    
+    // Toss out any bad requests from the client
+    if ( !('name' in req.body) || isNaN(id) || (id != req.body.id) ) {
+        return res.sendStatus(400);
+    }
+    
+    // console.log(req.body);   > {name: 'Plaintains', id: 2}, if that was your data. Just prints the data.
+    var item = storage.put(req.body);
+    res.status(201).json(item);
+});
 
+// `listen` method must be called after all routes are declared
 app.listen(process.env.PORT || 8080, process.env.IP);
