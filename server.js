@@ -11,8 +11,8 @@ var Storage = {
         return item;
     },
     delete: function(id) {
-        // Can assume array index is the same as 'id' property value
-        var deleteResult = this.items.splice(id, 1);    // Returns item removed (on success) or empty array (on fail)
+        var index = id - 1; // Item 0 has an id of 1, item 1 has an id of 2, etc.
+        var deleteResult = this.items.splice(index, 1);
         if (deleteResult.length > 0) {
             return true;    // Succeeded
         } else {
