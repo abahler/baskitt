@@ -11,6 +11,7 @@ var Storage = {
         return item;
     },
     delete: function(id) {
+        // Can assume array index is the same as 'id' property value
         var deleteResult = this.items.splice(id, 1);    // Returns item removed (on success) or empty array (on fail)
         if (deleteResult.length > 0) {
             return true;    // Succeeded
@@ -49,11 +50,12 @@ app.post('/items', jsonParser, function(req, res) {
     res.status(201).json(item);
 });
 
-app.listen(process.env.PORT || 8080, process.env.IP);
-
 app.delete('/items/:id', function(req, res) {
     var id = req.params.id;
+    // console.log('You have made a DELETE request with the supplied id of ' + id + '!');
+    // /* die after console.log */
     id = parseInt(id);  // Make sure we're working with a number
+
     // Supplied id needs to be in items list
     if (storage.items[id] === undefined) {  
         var msg = 'The supplied id was not found in the items list';
@@ -77,3 +79,5 @@ app.delete('/items/:id', function(req, res) {
 > Remember that you're passing the ID in the request.params and the request.body, 
     so you should check that they match as well.
 */
+
+app.listen(process.env.PORT || 8080, process.env.IP);
