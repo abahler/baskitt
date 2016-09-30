@@ -19,9 +19,11 @@ var Storage = {
             return false;   // Failed for some reason
         }
     },
-    put: function(reqBody) {
-        // Get the id 
-        // > return item, just as 'add' does.
+    update: function(reqBody) {
+        var index = reqBody.id - 1;
+        // Don't parse out data from body, then drill down to replace it. Just rotate it out.
+        this.items[index] = reqBody;  
+        return this.items[index];
     }
 };
 
@@ -41,10 +43,14 @@ storage.add('Peppers');
 var app = express();
 app.use(express.static('public'));
 
+// *** ROUTES ***
+
+// Get list of items
 app.get('/items', function(req, res) {
     res.json(storage.items);
 });
 
+// Add an item
 app.post('/items', jsonParser, function(req, res) {
     if (!('name' in req.body)) {
         return res.sendStatus(400);
@@ -54,6 +60,7 @@ app.post('/items', jsonParser, function(req, res) {
     res.status(201).json(item);
 });
 
+// Delete an item
 app.delete('/items/:id', function(req, res) {
     var id = req.params.id;
     id = parseInt(id);  // Make sure we're working with a number
@@ -72,14 +79,7 @@ app.delete('/items/:id', function(req, res) {
     }
 });
 
-/*
-> Create an endpoint that responds to a PUT request to /items/:id
-> If the item is edited, the server should respond with a 200 OK status and the new item
-> If the request is incorrectly formed (bad body, missing id), the request should fail gracefully
-> If a non-existent ID is supplied, your endpoint should create a new item using the ID supplied.
-> Remember that you're passing the ID in the request.params and the request.body, 
-    so you should check that they match as well.
-*/
+// Update an item
 app.put('/items/:id', jsonParser, function(req, res) {
     var id = req.params.id;
     id = parseInt(id);
@@ -90,8 +90,8 @@ app.put('/items/:id', jsonParser, function(req, res) {
     }
     
     // console.log(req.body);   > {name: 'Plaintains', id: 2}, if that was your data. Just prints the data.
-    var item = storage.put(req.body);
-    res.status(201).json(item);
+    var updatedItem = storage.update(req.body);
+    res.status(201).json(updatedItem);
 });
 
 // `listen` method must be called after all routes are declared
