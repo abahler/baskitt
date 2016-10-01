@@ -14,6 +14,9 @@ describe('Shopping List', function() {
     it('should respond with a 404 on PUT with nonexistent id');
     it('should respond with a 400 on PUT without body');
     it('should respond with a 400 to a PUT without valid JSON')
-    it('should respond with a 404 to a DELETE on an invalid id');
+    it('should respond with a 404 to a DELETE on an invalid id');   // Id that doesn't exist, OR badly formed id
     it('should respond with a 400 to a DELETE without an id');
+    
+    // Try to think of any additional edge cases which could occur
+    it('should respond with a 400 to a PUT where item name is not a string');   // Same as 'PUT without valid JSON'?
 });
