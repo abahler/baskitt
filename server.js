@@ -63,6 +63,9 @@ app.post('/items', jsonParser, function(req, res) {
 // Delete an item
 app.delete('/items/:id', function(req, res) {
     var id = req.params.id;
+    if (!id) {
+        res.status(400).json({'error': 'No id supplied to deletion service'});
+    }
     id = parseInt(id);  // Make sure we're working with a number
 
     // Supplied id needs to be in items list
