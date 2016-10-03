@@ -99,3 +99,6 @@ app.put('/items/:id', jsonParser, function(req, res) {
 
 // `listen` method must be called after all routes are declared
 app.listen(process.env.PORT || 8080, process.env.IP);
+
+exports.app = app;
+exports.storage = storage;
