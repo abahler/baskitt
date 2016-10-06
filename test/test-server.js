@@ -67,7 +67,6 @@ describe('Shopping List', function() {
         .send({'name': 'Spinach', 'id': 1})
         .end(function(err, res) {
             should.equal(err, null);
-            /*
             res.should.have.status(200);
             res.should.be.json;
             res.body.should.be.a('object');
@@ -84,12 +83,21 @@ describe('Shopping List', function() {
             storage.items[0].name.should.be.a('string');
             storage.items[0].id.should.be.a('number');
             storage.items[0].name.should.equal('Spinach');
-            */
             done();
         });
     });
     
-    it('should delete an item on DELETE');
+    it('should delete an item on DELETE', function(done) {
+        chai.request(app)
+        .delete('items/1')
+        .send({'id': 1})
+        .end(function(err, res) {
+            should.equal(err, null);
+            res.should.have.status(200);
+            storage.items[0].id.should.not.equal(1);
+            // Fewer assertions than the above tests because we have no response other than the HTTP 200 status
+        });
+    });
     
     // *** Custom tests from 'Try It!' section ***
     // Section asks for test for a POST to an ID that doesn't exist, but this doesn't make sense,
