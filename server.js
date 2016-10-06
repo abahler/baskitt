@@ -94,7 +94,8 @@ app.put('/items/:id', jsonParser, function(req, res) {
     
     // console.log(req.body);   > {name: 'Plaintains', id: 2}, if that was your data. Just prints the data.
     var updatedItem = storage.update(req.body);
-    res.status(201).json(updatedItem);
+    // Use 200 instead of 201, since the latter indicates a resource was created, which isn't the case here
+    res.status(200).json(updatedItem);
 });
 
 // `listen` method must be called after all routes are declared
