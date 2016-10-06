@@ -61,7 +61,32 @@ describe('Shopping List', function() {
             });
     });
     
-    it('should edit an item on PUT');
+    it('should edit an item on PUT', function(done) {
+        chai.request(app)
+        .put('items/1')
+        .send({'name': 'Spinach', 'id': 1})
+        .end(function(err, res) {
+            should.equal(err, null);
+            res.should.have.status(200);
+            res.should.be.json;
+            res.body.should.be.a('object');
+            res.body.should.have.property('name');
+            res.body.should.have.property('id');
+            res.body.name.should.be.a('string');
+            res.body.id.should.be.a('number');
+            res.body.name.should.equal('Spinach');
+            storage.items.should.be.a('array');
+            // Omitted check for storage.items.length == 4 because what if it changes between test runs?
+            storage.items[0].should.be.a('object');
+            storage.items[0].should.have.property('name');
+            storage.items[0].should.have.property('id');
+            storage.items[0].name.should.be.a('string');
+            storage.items[0].id.should.be.a('number');
+            storage.items[0].name.should.equal('Spinach');
+            done();
+        });
+    });
+    
     it('should delete an item on DELETE');
     
     // *** Custom tests from 'Try It!' section ***
