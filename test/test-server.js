@@ -63,7 +63,7 @@ describe('Shopping List', function() {
     
     it('should edit an item on PUT', function(done) {
         chai.request(app)
-        .put('items/1')
+        .put('/items/1')
         .send({'name': 'Spinach', 'id': 1})
         .end(function(err, res) {
             should.equal(err, null);
@@ -89,18 +89,20 @@ describe('Shopping List', function() {
     
     it('should delete an item on DELETE', function(done) {
         chai.request(app)
-        .delete('items/1')
+        .delete('/items/1')
         .send({'id': 1})
         .end(function(err, res) {
             should.equal(err, null);
             res.should.have.status(200);
             storage.items[0].id.should.not.equal(1);
             // Fewer assertions than the above tests because we have no response other than the HTTP 200 status
+            done();
         });
     });
     
     // *** Custom tests from 'Try It!' section ***
-    // Section asks for test for a POST to an ID that doesn't exist, but this doesn't make sense,
+    
+    // QUESTION: Section asks for test for a POST to an ID that doesn't exist, but this doesn't make sense,
     //      as it will exist when it is created.
     it('should respond with a 400 on POST without body data');
     it('should respond with a 400 on POST without valid JSON');
