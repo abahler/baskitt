@@ -88,6 +88,8 @@ describe('Shopping List', function() {
     });
     
     it('should delete an item on DELETE', function(done) {
+        // this.timeout(10000); // Increased timeout to 10 seconds, and failed with same error
+        
         chai.request(app)
         .delete('/items/1')
         .send({'id': 1})
