@@ -92,6 +92,19 @@ app.put('/items/:id', jsonParser, function(req, res) {
         return res.sendStatus(400);
     }
     
+    // If `id` not in any storage.items[n].id, return a 404 status
+    var idMatches = storage.items.filter(function(obj, i, theItems){   
+        if (obj.id === id) {
+            return true;
+        } else {
+            return false;
+        }
+    });
+    
+    if (idMatches.length === 0) {
+        res.sendStatus(404);
+    }
+    
     // console.log(req.body);   > {name: 'Plaintains', id: 2}, if that was your data. Just prints the data.
     var updatedItem = storage.update(req.body);
     // Use 200 instead of 201, since the latter indicates a resource was created, which isn't the case here
