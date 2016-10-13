@@ -111,7 +111,7 @@ describe('Shopping List', function() {
         .post('/items')
         .send({})
         .end(function(err, res) {
-            should.equal(err, true);    // We expect an error here
+            // should.equal(err, [Error: Bad Request]);    // We expect an error here
             res.should.have.status(400);
             done();
         });
@@ -122,7 +122,7 @@ describe('Shopping List', function() {
         .post('/items')
         .send('foo')
         .end(function(err, res) {
-            should.equal(err, true);
+            // should.equal(err, [Error: Bad Request]);
             res.should.have.status(400);
             done();
         });
@@ -133,7 +133,7 @@ describe('Shopping List', function() {
         .put('/items')          // Omit id, because that's the endpoint we're testing
         .send({'name': 'Spinach', 'id': 1})
         .end(function(err, res) {
-            should.equal(err, true);
+            // should.equal(err, [Error: Not Found]);
             res.should.have.status(404);
             done();
         });
@@ -144,7 +144,7 @@ describe('Shopping List', function() {
         .put('/items/1')
         .send({'name': 'Avocado', 'id': 2}) // ID in body not matching ID in URL
         .end(function(err, res) {
-            should.equal(err, true);
+            // should.equal(err, 'Bad Request');
             res.should.have.status(400);
             done();
         });
@@ -155,7 +155,7 @@ describe('Shopping List', function() {
         .put('/items/2001')     // Nonexistent ID
         .send({'name': 'Blackberries', 'id': 2001})
         .end(function(err, res) {
-            should.equal(err, true);
+            // should.equal(err, null);
             res.should.have.status(404);
             done();
         });
@@ -165,7 +165,7 @@ describe('Shopping List', function() {
         chai.request(app)
         .put('/items/1')    // No send() function called after the request method
         .end(function(err, res) {
-            should.equal(err, true);
+            // should.equal(err, 'Bad Request');
             res.should.have.status(400);
             done();
         });
@@ -176,7 +176,7 @@ describe('Shopping List', function() {
         .put('/items/1')
         .send({'wrongKey': 'foobar'})
         .end(function(err, res) {
-            should.equal(err, true);
+            // should.equal(err, 'Bad Request');
             res.should.have.status(400);
             done();
         })
@@ -186,7 +186,7 @@ describe('Shopping List', function() {
         chai.request(app)
         .delete('/items/2001')
         .end(function(err, res) {
-            should.equal(err, true);
+            // should.equal(err, 'Not Found');
             res.should.have.status(404);
             done();
         });
@@ -196,7 +196,7 @@ describe('Shopping List', function() {
         chai.request(app)
         .delete('/items')
         .end(function(err, res) {
-            should.equal(err, true);
+            // should.equal(err, 'No id supplied to deletion service');
             res.should.have.status(400);
             done();
         });
@@ -208,7 +208,7 @@ describe('Shopping List', function() {
         .put('/items/1')
         .send({'name': 42, 'id': 1})
         .end(function(err, res) {
-            should.equal(err, true);
+            // should.equal(err, null);
             res.should.have.status(400);
             done();
         });
