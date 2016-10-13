@@ -41,7 +41,7 @@ storage.add('Tomatoes');
 storage.add('Peppers');
 
 var app = express();
-app.use(express.static('public'));
+app.use(express.static('public'));  // Use 'public' directory to serve assets like HTML, CSS...
 
 // *** ROUTES ***
 
@@ -88,7 +88,7 @@ app.put('/items/:id', jsonParser, function(req, res) {
     id = parseInt(id);
     
     // Toss out any bad requests from the client
-    if ( !('name' in req.body) || isNaN(id) || (id != req.body.id) ) {
+    if ( !req.body || !('name' in req.body) || isNaN(id) || (id != req.body.id) ) {
         return res.sendStatus(400);
     }
     
