@@ -82,17 +82,23 @@ app.delete('/items/:id', function(req, res) {
     }
 });
 
+// Set up endpoint for a DELETE to an item without an id
+app.delete('/items', function(req, res) {
+    // No id supplied, so return a 400. Why this doesn't work in the above DELETE route, I don't know.
+    res.status(400).json({'error': 'No id supplied to deletion service'});
+});
+
 // Update an item
 app.put('/items/:id', jsonParser, function(req, res) {
     var id = req.params.id;
     id = parseInt(id);
     
     // Toss out any bad requests from the client
-    if ( !req.body || !('name' in req.body) || isNaN(id) || (id != req.body.id) ) {
+    if ( !req.body || !('name' in req.body) || (typeof req.body.name != 'string') || isNaN(id) || (id != req.body.id) ) {
         return res.sendStatus(400);
     }
     
-    // If `id` not in any storage.items[n].id, return a 404 status
+    // Look for supplied ID in 'id' key in every storage.items object
     var idMatches = storage.items.filter(function(obj, i, theItems){   
         if (obj.id === id) {
             return true;
@@ -101,14 +107,15 @@ app.put('/items/:id', jsonParser, function(req, res) {
         }
     });
     
+    // If supplied ID doesn't exist in any of the storage.items objects, throw out the request
     if (idMatches.length === 0) {
         res.sendStatus(404);
+    } else {
+        // console.log(req.body);   > {name: 'Plaintains', id: 2}, if that was your data. Just prints the data.
+        var updatedItem = storage.update(req.body);
+        // Use 200 instead of 201, since the latter indicates a resource was created, which isn't the case here
+        res.status(200).json(updatedItem);
     }
-    
-    // console.log(req.body);   > {name: 'Plaintains', id: 2}, if that was your data. Just prints the data.
-    var updatedItem = storage.update(req.body);
-    // Use 200 instead of 201, since the latter indicates a resource was created, which isn't the case here
-    res.status(200).json(updatedItem);
 });
 
 // `listen` method must be called after all routes are declared
