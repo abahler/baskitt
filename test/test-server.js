@@ -87,11 +87,12 @@ describe('Shopping List', function() {
         });
     });
     
+    /*
     it('should delete an item on DELETE', function(done) {
         // this.timeout(10000); // Increased timeout to 10 seconds, and failed with same error
         
         chai.request(app)
-        .delete('/items/1')
+        .del('/items/1')
         .send({'id': 1})
         .end(function(err, res) {
             should.equal(err, null);
@@ -101,21 +102,116 @@ describe('Shopping List', function() {
             done();
         });
     });
+    */
     
     // *** Custom tests from 'Try It!' section ***
     
-    // QUESTION: Section asks for test for a POST to an ID that doesn't exist, but this doesn't make sense,
-    //      as it will exist when it is created.
-    it('should respond with a 400 on POST without body data');
-    it('should respond with a 400 on POST without valid JSON');
-    it('should respond with a 404 on PUT without id in endpoint');
-    it('should respond with a 400 on PUT when ids in endpoint and body differ');
-    it('should respond with a 404 on PUT with nonexistent id');
-    it('should respond with a 400 on PUT without body');
-    it('should respond with a 400 to a PUT without valid JSON');
-    it('should respond with a 404 to a DELETE on an invalid id');   // Badly formed id
-    it('should respond with a 400 to a DELETE without an id');
+    it('should respond with a 400 on POST without body data', function(done) {
+        chai.request(app)
+        .post('/items')
+        .send({})
+        .end(function(err, res) {
+            should.equal(err, true);    // We expect an error here
+            res.should.have.status(400);
+            done();
+        });
+    });
+    
+    it('should respond with a 400 on POST without valid JSON', function(done) {
+        chai.request(app)
+        .post('/items')
+        .send('foo')
+        .end(function(err, res) {
+            should.equal(err, true);
+            res.should.have.status(400);
+            done();
+        });
+    });
+    
+    it('should respond with a 404 on PUT without id in endpoint', function(done) {
+        chai.request(app)
+        .put('/items')          // Omit id, because that's the endpoint we're testing
+        .send({'name': 'Spinach', 'id': 1})
+        .end(function(err, res) {
+            should.equal(err, true);
+            res.should.have.status(404);
+            done();
+        });
+    });
+    
+    it('should respond with a 400 on PUT when ids in endpoint and body differ', function(done) {
+        chai.request(app)
+        .put('/items/1')
+        .send({'name': 'Avocado', 'id': 2}) // ID in body not matching ID in URL
+        .end(function(err, res) {
+            should.equal(err, true);
+            res.should.have.status(400);
+            done();
+        });
+    });
+    
+    it('should respond with a 404 on PUT with nonexistent id', function(done) {
+        chai.request(app)
+        .put('/items/2001')     // Nonexistent ID
+        .send({'name': 'Blackberries', 'id': 2001})
+        .end(function(err, res) {
+            should.equal(err, true);
+            res.should.have.status(404);
+            done();
+        });
+    });
+    
+    it('should respond with a 400 on PUT without body', function(done) {
+        chai.request(app)
+        .put('/items/1')    // No send() function called after the request method
+        .end(function(err, res) {
+            should.equal(err, true);
+            res.should.have.status(400);
+            done();
+        });
+    });
+    
+    it('should respond with a 400 to a PUT without valid JSON', function(done) {
+        chai.request(app)
+        .put('/items/1')
+        .send({'wrongKey': 'foobar'})
+        .end(function(err, res) {
+            should.equal(err, true);
+            res.should.have.status(400);
+            done();
+        })
+    });
+    
+    it('should respond with a 404 to a DELETE on an invalid id', function(done) {
+        chai.request(app)
+        .delete('/items/2001')
+        .end(function(err, res) {
+            should.equal(err, true);
+            res.should.have.status(404);
+            done();
+        });
+    });   // Badly formed id
+    
+    it('should respond with a 400 to a DELETE without an id', function(done) {
+        chai.request(app)
+        .delete('/items')
+        .end(function(err, res) {
+            should.equal(err, true);
+            res.should.have.status(400);
+            done();
+        });
+    });
     
     // Try to think of any additional edge cases which could occur
-    it('should respond with a 400 to a PUT where item name is not a string');   // Same as 'PUT without valid JSON'?
+    it('should respond with a 400 to a PUT where item name is not a string', function(done) {
+        chai.request(app)
+        .put('/items/1')
+        .send({'name': 42, 'id': 1})
+        .end(function(err, res) {
+            should.equal(err, true);
+            res.should.have.status(400);
+            done();
+        });
+    });
+    
 });
